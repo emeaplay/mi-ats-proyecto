@@ -31,7 +31,7 @@ class MiniATSApp:
         self.root.configure(bg=self.COLOR_BG, padx=25, pady=25)
 
         # --- VARIABLES DE ACTUALIZACION ---
-        self.VERSION_ACTUAL = "1.41"
+        self.VERSION_ACTUAL = "1.42"
         self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
         self.URL_EXE = "https://github.com/emeaplay/mi-ats-proyecto/releases/latest/download/mini_ats.exe"
 
@@ -135,15 +135,14 @@ class MiniATSApp:
 
     # --- HELPERS VISUALES: BOTONES ESTILO BOOTSTRAP ---
     def crear_forma_boton(self, color):
-        """Genera una imagen solida en memoria para usar como fondo redondeado nativo."""
+        """Genera una imagen solida en memoria con transparencia nativa."""
         img = tk.PhotoImage(width=12, height=12)
-        # Llena los pixeles simulando un borde ligeramente suavizado
+        img.blank() # Esto hace que TODA la imagen sea transparente desde el inicio
+        
+        # Pintamos solo el cuerpo del boton, dejando las 4 esquinas sin tocar (transparentes)
         for x in range(12):
             for y in range(12):
-                # Remueve las esquinas puras para dar el efecto border-radius
-                if (x==0 and y==0) or (x==11 and y==0) or (x==0 and y==11) or (x==11 and y==11):
-                    img.put("transparent", (x, y))
-                else:
+                if not ((x==0 and y==0) or (x==11 and y==0) or (x==0 and y==11) or (x==11 and y==11)):
                     img.put(color, (x, y))
         return img
 
