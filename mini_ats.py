@@ -19,7 +19,7 @@ class MiniATSApp:
         self.root = root
         
         # --- 1. PRIMERO DEFINIMOS LAS VARIABLES CLAVE ---
-        self.VERSION_ACTUAL = "1.4.4"
+        self.VERSION_ACTUAL = "1.4.5"
         self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
         self.URL_EXE = "https://github.com/emeaplay/mi-ats-proyecto/releases/latest/download/mini_ats.exe"
 
