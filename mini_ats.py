@@ -17,7 +17,7 @@ except ImportError:
 class MiniATSApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Mini ATS - MRB Seleccion (EMEsoft)")
+        self.root.title(f"Mini ATS - MRB Seleccion (EMEsoft) (v{self.VERSION_ACTUAL})")
         # Altura ajustada a 700 para evitar que se corte en laptops
         self.root.geometry("900x700") 
         
@@ -32,7 +32,7 @@ class MiniATSApp:
         self.root.configure(bg=self.COLOR_BG, padx=20, pady=15)
 
         # --- VARIABLES DE ACTUALIZACION ---
-        self.VERSION_ACTUAL = "1.4.1"
+        self.VERSION_ACTUAL = "1.4.2"
         self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
         self.URL_EXE = "https://github.com/emeaplay/mi-ats-proyecto/releases/latest/download/mini_ats.exe"
 
