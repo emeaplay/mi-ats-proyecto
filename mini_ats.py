@@ -17,7 +17,7 @@ except ImportError:
 class MiniATSApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Mini ATS - Comparativa de Postulantes V4 (Bootstrap Flat)")
+        self.root.title("Mini ATS - MRB Seleccion (EMEsoft)")
         # Altura ajustada a 700 para evitar que se corte en laptops
         self.root.geometry("900x700") 
         
@@ -32,7 +32,7 @@ class MiniATSApp:
         self.root.configure(bg=self.COLOR_BG, padx=20, pady=15)
 
         # --- VARIABLES DE ACTUALIZACION ---
-        self.VERSION_ACTUAL = "1.43"
+        self.VERSION_ACTUAL = "1.4.1"
         self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
         self.URL_EXE = "https://github.com/emeaplay/mi-ats-proyecto/releases/latest/download/mini_ats.exe"
 
@@ -61,7 +61,7 @@ class MiniATSApp:
         frame_titulos = tk.Frame(frame_header, bg=self.COLOR_BG)
         frame_titulos.pack(side="left")
         ttk.Label(frame_titulos, text="Analisis ATS - Comparativa de Multiples Candidatos", style="Header.TLabel").pack(anchor="w")
-        ttk.Label(frame_titulos, text="Panel de gestion y control de perfiles para procesos de seleccion", style="Sub.TLabel").pack(anchor="w")
+        ttk.Label(frame_titulos, text="MRB Seleccion Peru - Gestion de Talento Humano", style="Sub.TLabel").pack(anchor="w")
 
         # Boton pequeño de actualizacion (Derecha)
         self.btn_actualizar = tk.Button(
@@ -111,10 +111,10 @@ class MiniATSApp:
         self.btn_limpiar.pack(fill="x")
 
         # --- SECCION INFERIOR: ACCION PRINCIPAL Y RESULTADOS ---
-        self.btn_analizar = self.crear_boton_estilo(root, "⚡ EJECUTAR ANALISIS COMPARATIVO ATS", self.COLOR_SUCCESS, self.analizar_todos)
+        self.btn_analizar = self.crear_boton_estilo(root, "⚡ COMPARAR", self.COLOR_SUCCESS, self.analizar_todos)
         self.btn_analizar.pack(fill="x", pady=(0, 15))
 
-        self.frame_resultados = tk.LabelFrame(root, text=" Tabla Comparativa de Resultados ", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg=self.COLOR_PRIMARY, padx=15, pady=10, relief="solid", bd=1)
+        self.frame_resultados = tk.LabelFrame(root, text=" Tabla Comparativa ", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg=self.COLOR_PRIMARY, padx=15, pady=10, relief="solid", bd=1)
         self.frame_resultados.pack(fill="both", expand=True)
 
         # Altura de la tabla reducida a 4 para garantizar que encaje en la pantalla
