@@ -17,94 +17,145 @@ except ImportError:
 class MiniATSApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Mini ATS - Comparativa de Postulantes V4")
-        self.root.geometry("850x730")
-        self.root.configure(padx=20, pady=20)
+        self.root.title("Mini ATS - Comparativa de Postulantes V4 (Bootstrap Style)")
+        self.root.geometry("900x780")
+        
+        # --- PALETA DE COLORES REFINADA (BOOTSTRAP 5) ---
+        self.COLOR_BG = "#f8f9fa"          # Fondo general gris muy claro amigable
+        self.COLOR_PRIMARY = "#0d6efd"     # Azul primario Bootstrap
+        self.COLOR_SUCCESS = "#198754"     # Verde Success Bootstrap
+        self.COLOR_DANGER = "#dc3545"      # Rojo Danger Bootstrap
+        self.COLOR_SECONDARY = "#6c757d"   # Gris secundario
+        self.COLOR_TEXT = "#212529"        # Texto casi negro moderno
+        
+        self.root.configure(bg=self.COLOR_BG, padx=25, pady=25)
 
         # --- VARIABLES DE ACTUALIZACION ---
-        self.VERSION_ACTUAL = "1.4"
-        
-        # El enlace que lee el numero de version
+        self.VERSION_ACTUAL = "1.41"
         self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
-        
-        # El enlace que descarga siempre el ultimo ejecutable
         self.URL_EXE = "https://github.com/emeaplay/mi-ats-proyecto/releases/latest/download/mini_ats.exe"
 
         self.lista_postulantes = []
         self.resultados_finales = []
 
+        # --- CONFIGURACION DE ESTILOS TTK (TABLA Y CAMPOS) ---
         style = ttk.Style()
-        style.configure("TLabel", font=("Segoe UI", 10))
-        style.configure("TButton", font=("Segoe UI", 10, "bold"))
-        style.configure("Header.TLabel", font=("Segoe UI", 14, "bold"), foreground="#0056b3")
+        style.theme_use("clam")  # Clam permite personalizar bordes y fondos limpiamente
+        
+        style.configure("TLabel", font=("Segoe UI", 10), background=self.COLOR_BG, foreground=self.COLOR_TEXT)
+        style.configure("Header.TLabel", font=("Segoe UI", 16, "bold"), background=self.COLOR_BG, foreground=self.COLOR_PRIMARY)
+        style.configure("Sub.TLabel", font=("Segoe UI", 10, "bold"), background=self.COLOR_BG, foreground=self.COLOR_SECONDARY)
+        
+        # Estilo para cajas de texto de entrada (Inputs)
+        style.configure("TEntry", fieldbackground="#ffffff", bordercolor="#dee2e6", lightcolor="#dee2e6", darkcolor="#dee2e6")
+        
+        # Estilo moderno para la Tabla de Resultados (Treeview)
+        style.configure("Treeview", font=("Segoe UI", 10), rowheight=28, background="#ffffff", fieldbackground="#ffffff", foreground=self.COLOR_TEXT)
+        style.configure("Treeview.Heading", font=("Segoe UI", 10, "bold"), background="#e9ecef", foreground=self.COLOR_TEXT, relief="flat")
+        style.map("Treeview", background=[('selected', '#e7f1ff')], foreground=[('selected', self.COLOR_PRIMARY)])
 
-        # --- SECCION SUPERIOR: PUESTO ---
-        ttk.Label(root, text="Analisis ATS - Comparativa de Multiples Candidatos", style="Header.TLabel").pack(anchor="w", pady=(0, 10))
-        ttk.Label(root, text="Puesto requerido:").pack(anchor="w")
+        # --- SIMULADOR DE BOTONES REDONDEADOS BOOTSTRAP ---
+        # Creamos imagenes en memoria de 2x2 pixeles transparentes con bordes y esquinas suaves para simular el radio de Bootstrap
+        self.img_btn_primary = self.crear_forma_boton(self.COLOR_PRIMARY)
+        self.img_btn_success = self.crear_forma_boton(self.COLOR_SUCCESS)
+        self.img_btn_danger = self.crear_forma_boton(self.COLOR_DANGER)
+        self.img_btn_secondary = self.crear_forma_boton(self.COLOR_SECONDARY)
+
+        # --- SECCION SUPERIOR: ENCABEZADO Y PUESTO ---
+        ttk.Label(root, text="Analisis ATS - Comparativa de Multiples Candidatos", style="Header.TLabel").pack(anchor="w", pady=(0, 2))
+        ttk.Label(root, text="Panel de gestion y control de perfiles para procesos de seleccion", style="Sub.TLabel").pack(anchor="w", pady=(0, 15))
+        
+        ttk.Label(root, text="Puesto requerido / Vacante analizada:").pack(anchor="w")
         self.entry_puesto = ttk.Entry(root, font=("Segoe UI", 11))
         self.entry_puesto.pack(fill="x", pady=(0, 15))
 
-        # --- SECCION CENTRAL ---
-        frame_central = tk.Frame(root)
+        # --- SECCION CENTRAL: INTERFAZ DE DOS COLUMNAS ---
+        frame_central = tk.Frame(root, bg=self.COLOR_BG)
         frame_central.pack(fill="both", expand=True, pady=(0, 15))
 
-        # Izquierda
-        frame_izq = tk.LabelFrame(frame_central, text=" Datos del Postulante Actual ", font=("Segoe UI", 10, "bold"), padx=10, pady=10)
-        frame_izq.pack(side="left", fill="both", expand=True, padx=(0, 10))
+        # Columna Izquierda: Captura de Datos
+        frame_izq = tk.LabelFrame(frame_central, text=" Datos del Postulante Actual ", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg=self.COLOR_PRIMARY, padx=15, pady=15, relief="solid", bd=1)
+        frame_izq.pack(side="left", fill="both", expand=True, padx=(0, 15))
 
-        ttk.Label(frame_izq, text="Nombre del Candidato:").pack(anchor="w")
+        ttk.Label(frame_izq, text="Nombre del Candidato:", background="#ffffff").pack(anchor="w")
         self.entry_nombre = ttk.Entry(frame_izq, font=("Segoe UI", 10))
-        self.entry_nombre.pack(fill="x", pady=(0, 10))
+        self.entry_nombre.pack(fill="x", pady=(0, 12))
 
-        ttk.Label(frame_izq, text="Texto del CV (O carga un archivo debajo):").pack(anchor="w")
-        self.text_cv = tk.Text(frame_izq, height=8, width=35, font=("Segoe UI", 10))
-        self.text_cv.pack(fill="both", expand=True, pady=(0, 10))
+        ttk.Label(frame_izq, text="Texto del CV (O carga un archivo debajo):", background="#ffffff").pack(anchor="w")
+        self.text_cv = tk.Text(frame_izq, height=8, width=35, font=("Segoe UI", 10), bg="#ffffff", fg=self.COLOR_TEXT, bd=1, relief="solid", highlightthickness=0, insertbackground=self.COLOR_TEXT)
+        self.text_cv.pack(fill="both", expand=True, pady=(0, 12))
 
-        frame_btn_izq = tk.Frame(frame_izq)
+        # Contenedor de Botones Izquierda
+        frame_btn_izq = tk.Frame(frame_izq, bg="#ffffff")
         frame_btn_izq.pack(fill="x")
         
-        self.btn_archivos = ttk.Button(frame_btn_izq, text="Cargar Archivo(s)", command=self.cargar_archivos)
+        self.btn_archivos = self.crear_boton_redondeado(frame_btn_izq, "Cargar Archivo(s)", self.img_btn_secondary, self.cargar_archivos)
         self.btn_archivos.pack(side="left", padx=(0, 5))
         
-        self.btn_agregar = ttk.Button(frame_btn_izq, text="Agregar Postulante", command=self.agregar_postulante)
+        self.btn_agregar = self.crear_boton_redondeado(frame_btn_izq, "Agregar Postulante a la Cola", self.img_btn_primary, self.agregar_postulante)
         self.btn_agregar.pack(side="left", fill="x", expand=True)
 
-        # Derecha
-        frame_der = tk.LabelFrame(frame_central, text=" Postulantes en Cola ", font=("Segoe UI", 10, "bold"), padx=10, pady=10)
+        # Columna Derecha: Lista en espera
+        frame_der = tk.LabelFrame(frame_central, text=" Postulantes en Cola ", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg=self.COLOR_PRIMARY, padx=15, pady=15, relief="solid", bd=1)
         frame_der.pack(side="right", fill="both", expand=True)
 
-        self.box_postulantes = tk.Listbox(frame_der, font=("Segoe UI", 10), selectmode=tk.SINGLE)
-        self.box_postulantes.pack(fill="both", expand=True, pady=(0, 10))
+        self.box_postulantes = tk.Listbox(frame_der, font=("Segoe UI", 10), selectmode=tk.SINGLE, bg="#ffffff", fg=self.COLOR_TEXT, bd=1, relief="solid", highlightthickness=0)
+        self.box_postulantes.pack(fill="both", expand=True, pady=(0, 12))
         
-        self.btn_limpiar = ttk.Button(frame_der, text="Limpiar Lista", command=self.limpiar_cola)
+        self.btn_limpiar = self.crear_boton_redondeado(frame_der, "Limpiar Lista de Espera", self.img_btn_danger, self.limpiar_cola)
         self.btn_limpiar.pack(fill="x")
 
-        # --- SECCION INFERIOR ---
-        self.btn_analizar = ttk.Button(root, text="EJECUTAR ANALISIS COMPARATIVO", command=self.analizar_todos)
+        # --- SECCION INFERIOR: ACCION PRINCIPAL Y RESULTADOS ---
+        self.btn_analizar = self.crear_boton_redondeado(root, "⚡ EJECUTAR ANALISIS COMPARATIVO ATS", self.img_btn_success, self.analizar_todos)
         self.btn_analizar.pack(fill="x", pady=(0, 15))
 
-        self.frame_resultados = tk.LabelFrame(root, text=" Tabla Comparativa de Resultados ", font=("Segoe UI", 10, "bold"), padx=10, pady=10)
+        self.frame_resultados = tk.LabelFrame(root, text=" Tabla Comparativa de Resultados ", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg=self.COLOR_PRIMARY, padx=15, pady=15, relief="solid", bd=1)
         self.frame_resultados.pack(fill="both", expand=True)
 
+        # Construccion e integracion de la Tabla
         self.tabla = ttk.Treeview(self.frame_resultados, columns=("Nombre", "Porcentaje", "Detalle"), show="headings", height=5)
         self.tabla.heading("Nombre", text="Nombre del Postulante")
         self.tabla.heading("Porcentaje", text="Porcentaje de Aptitud")
         self.tabla.heading("Detalle", text="Evaluacion General")
         
-        self.tabla.column("Nombre", width=200, anchor="w")
-        self.tabla.column("Porcentaje", width=150, anchor="center")
-        self.tabla.column("Detalle", width=400, anchor="w")
-        self.tabla.pack(fill="both", expand=True, pady=(0, 10))
+        self.tabla.column("Nombre", width=220, anchor="w")
+        self.tabla.column("Porcentaje", width=160, anchor="center")
+        self.tabla.column("Detalle", width=420, anchor="w")
+        self.tabla.pack(fill="both", expand=True, pady=(0, 12))
 
-        # Contenedor para botones de Exportar y Actualizar
-        frame_botones_inferior = tk.Frame(self.frame_resultados)
+        # Contenedor inferior para botones secundarios
+        frame_botones_inferior = tk.Frame(self.frame_resultados, bg="#ffffff")
         frame_botones_inferior.pack(fill="x")
 
-        self.btn_exportar = ttk.Button(frame_botones_inferior, text="Exportar Tabla a CSV", command=self.exportar_csv)
+        self.btn_exportar = self.crear_boton_redondeado(frame_botones_inferior, "Exportar Tabla a CSV", self.img_btn_secondary, self.exportar_csv)
         self.btn_exportar.pack(side="left", fill="x", expand=True, padx=(0, 5))
 
-        self.btn_actualizar = ttk.Button(frame_botones_inferior, text=f"Buscar Actualizacion (v{self.VERSION_ACTUAL})", command=self.buscar_actualizacion)
+        self.btn_actualizar = self.crear_boton_redondeado(frame_botones_inferior, f"Buscar Actualizacion (v{self.VERSION_ACTUAL})", self.img_btn_primary, self.buscar_actualizacion)
         self.btn_actualizar.pack(side="right", fill="x", expand=True, padx=(5, 0))
+
+    # --- HELPERS VISUALES: BOTONES ESTILO BOOTSTRAP ---
+    def crear_forma_boton(self, color):
+        """Genera una imagen solida en memoria para usar como fondo redondeado nativo."""
+        img = tk.PhotoImage(width=12, height=12)
+        # Llena los pixeles simulando un borde ligeramente suavizado
+        for x in range(12):
+            for y in range(12):
+                # Remueve las esquinas puras para dar el efecto border-radius
+                if (x==0 and y==0) or (x==11 and y==0) or (x==0 and y==11) or (x==11 and y==11):
+                    img.put("transparent", (x, y))
+                else:
+                    img.put(color, (x, y))
+        return img
+
+    def crear_boton_redondeado(self, contenedor, texto, imagen_fondo, comando):
+        """Construye un boton amigable utilizando labels compuestos."""
+        btn = tk.Button(
+            contenedor, text=texto, image=imagen_fondo, compound="center",
+            command=comando, font=("Segoe UI", 10, "bold"), fg="#ffffff",
+            relief="flat", bd=0, highlightthickness=0, activebackground=self.COLOR_BG,
+            cursor="hand2", padx=15, pady=8
+        )
+        return btn
 
     # --- METODOS DEL ATS ---
     def cargar_archivos(self):
@@ -197,7 +248,6 @@ class MiniATSApp:
     # --- METODOS DE AUTO-ACTUALIZACION ---
     def buscar_actualizacion(self):
         try:
-            # Hace la consulta a la URL (timeout de 5 segundos para que el programa no se congele si no hay internet)
             respuesta = urllib.request.urlopen(self.URL_VERSION, timeout=5)
             version_nube = respuesta.read().decode('utf-8').strip()
 
@@ -206,15 +256,12 @@ class MiniATSApp:
                     self.descargar_y_aplicar_actualizacion()
             else:
                 messagebox.showinfo("Actualizado", "Ya tienes la version mas reciente instalada.")
-
         except Exception as e:
-            messagebox.showerror("Error de red", "No se pudo comprobar la actualizacion. Verifica tu conexion o la ruta de red.")
+            messagebox.showerror("Error de red", "No se pudo comprobar la actualizacion. Verifica tu conexion.")
 
     def descargar_y_aplicar_actualizacion(self):
-        # Esta validacion es clave: asegura que el reemplazo solo intente hacerse si es un .exe
-        # Si estas corriendo el script .py, getattr(sys, 'frozen', False) devolvera False.
         if not getattr(sys, 'frozen', False):
-            messagebox.showwarning("Modo Desarrollo", "La auto-actualizacion solo funciona cuando el programa esta compilado como un ejecutable (.exe).")
+            messagebox.showwarning("Modo Desarrollo", "La auto-actualizacion solo funciona en el ejecutable (.exe).")
             return
 
         nombre_actual = os.path.basename(sys.executable)
@@ -222,10 +269,9 @@ class MiniATSApp:
         script_bat = "actualizador.bat"
 
         try:
-            messagebox.showinfo("Descargando", "Se esta descargando la actualizacion. Al dar clic en Aceptar, el programa se cerrara y se reiniciara solo en unos segundos.")
+            messagebox.showinfo("Descargando", "Descargando actualizacion... El programa se reiniciara automaticamente.")
             urllib.request.urlretrieve(self.URL_EXE, nombre_temporal)
 
-            # Escribe el script de lotes (.bat) que hara el intercambio por detras
             contenido_bat = f"""@echo off
 timeout /t 2 /nobreak > NUL
 del "{nombre_actual}"
@@ -236,10 +282,8 @@ del "%~f0"
             with open(script_bat, "w") as f:
                 f.write(contenido_bat)
 
-            # Ejecuta el .bat y cierra la aplicacion inmediatamente
             subprocess.Popen(script_bat, shell=True)
             sys.exit()
-
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrio un fallo al intentar actualizar:\n{e}")
 
