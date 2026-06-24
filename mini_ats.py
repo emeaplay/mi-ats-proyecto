@@ -242,13 +242,21 @@ class MiniATSApp:
             respuesta = urllib.request.urlopen(self.URL_VERSION, timeout=5)
             version_nube = respuesta.read().decode('utf-8').strip()
 
-            if float(version_nube) > float(self.VERSION_ACTUAL):
+            # MAGIA AQUI: Convierte "1.4.2" en listas matemáticas [1, 4, 2] para comparar sin errores
+            v_nube = [int(n) for n in version_nube.split(".")]
+            v_actual = [int(n) for n in self.VERSION_ACTUAL.split(".")]
+
+            if v_nube > v_actual:
                 if messagebox.askyesno("Actualizacion Disponible", f"Hay una nueva version ({version_nube}). ¿Deseas descargarla y reiniciar el programa ahora?"):
                     self.descargar_y_aplicar_actualizacion()
             else:
                 messagebox.showinfo("Actualizado", "Ya tienes la version mas reciente instalada.")
+        
+        except ValueError:
+            messagebox.showerror("Error Interno", "Fallo al leer el formato de la versión (Revisa que solo tenga números y puntos).")
         except Exception as e:
-            messagebox.showerror("Error de red", "No se pudo comprobar la actualizacion. Verifica tu conexion.")
+            # Ahora si te mostrara el error real si es que de verdad falla el internet
+            messagebox.showerror("Error de red", f"No se pudo comprobar la actualizacion.\nDetalle tecnico: {e}")
 
     def descargar_y_aplicar_actualizacion(self):
         if not getattr(sys, 'frozen', False):
