@@ -19,7 +19,7 @@ class MiniATSApp:
         self.root = root
         
         # --- 1. PRIMERO DEFINIMOS LAS VARIABLES CLAVE ---
-        self.VERSION_ACTUAL = "1.4.3"
+        self.VERSION_ACTUAL = "1.4.4"
         self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
         self.URL_EXE = "https://github.com/emeaplay/mi-ats-proyecto/releases/latest/download/mini_ats.exe"
 
@@ -276,7 +276,9 @@ del "%~f0"
             subprocess.Popen(script_bat, shell=True)
             sys.exit()
         except Exception as e:
-            messagebox.showerror("Error", f"Ocurrio un fallo al intentar actualizar:\n{e}")
+            import traceback
+            detalle = traceback.format_exc()
+            messagebox.showerror("Error de Diagnostico", f"Fallo interno detectado:\n{e}\n\nDetalle:\n{detalle}")
 
 if __name__ == "__main__":
     root = tk.Tk()
