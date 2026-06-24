@@ -22,10 +22,13 @@ class MiniATSApp:
         self.root.configure(padx=20, pady=20)
 
         # --- VARIABLES DE ACTUALIZACION ---
-        self.VERSION_ACTUAL = "1.0"
-        # Cambia estas rutas por las de tu servidor local o repositorio
-        self.URL_VERSION = "https://tu-servidor.com/version.txt"
-        self.URL_EXE = "https://tu-servidor.com/mini_ats_nuevo.exe"
+        self.VERSION_ACTUAL = "1.3"
+        
+        # El enlace que lee el numero de version
+        self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
+        
+        # El enlace que descarga siempre el ultimo ejecutable
+        self.URL_EXE = "https://github.com/emeaplay/mi-ats-proyecto/releases/latest/download/mini_ats.exe"
 
         self.lista_postulantes = []
         self.resultados_finales = []
@@ -198,7 +201,7 @@ class MiniATSApp:
             respuesta = urllib.request.urlopen(self.URL_VERSION, timeout=5)
             version_nube = respuesta.read().decode('utf-8').strip()
 
-            if version_nube > self.VERSION_ACTUAL:
+            if float(version_nube) > float(self.VERSION_ACTUAL):
                 if messagebox.askyesno("Actualizacion Disponible", f"Hay una nueva version ({version_nube}). ¿Deseas descargarla y reiniciar el programa ahora?"):
                     self.descargar_y_aplicar_actualizacion()
             else:
