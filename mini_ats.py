@@ -22,7 +22,7 @@ class MiniATSApp:
         self.root.configure(padx=20, pady=20)
 
         # --- VARIABLES DE ACTUALIZACION ---
-        self.VERSION_ACTUAL = "1.3"
+        self.VERSION_ACTUAL = "1.4"
         
         # El enlace que lee el numero de version
         self.URL_VERSION = "https://raw.githubusercontent.com/emeaplay/mi-ats-proyecto/main/version.txt"
